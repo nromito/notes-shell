@@ -5,6 +5,23 @@ const path = require('path')
 const fs = require('fs');
 const stream = require('stream');
 
+const optionList = [
+    { name: 'help', alias: 'h', type: Boolean, description: 'prints usage'},
+    { name: 'file', alias: 'f', type: String, defaultValue: path.join(process.env['HOME'], 'git', 'notes', 'notes.txt'), description: 'the desired notes file'},
+    { name: 'newDate', alias: 'n', type: Boolean, description: 'appends the current date to the end of the file' },
+    { name: 'list', alias: 'l', type: Boolean, description: 'prints the contents of the note' },
+]
+
+function printUsage() {
+    const usageOut = usage([
+      {
+        header: 'Options',
+        optionList
+      },
+    ])
+    console.log(usageOut);
+}
+
 function appendNewDate(file) {
     const date = new Date();
     const month = date.getUTCMonth() + 1;
@@ -13,22 +30,16 @@ function appendNewDate(file) {
     fs.appendFileSync(file, `${month}/${day}/${year}\n\n`);
 }
 
-const optionList = [
-    { name: 'help', alias: 'h', type: Boolean},
-    { name: 'file', alias: 'f', type: String, defaultValue: path.join(process.env['HOME'], 'git', 'notes', 'notes.txt')},
-    { name: 'newDate', alias: 'n', type: Boolean },
-    { name: 'list', alias: 'l', type: Boolean },
-]
+let options;
+try {
+    options = cli(optionList);
+} catch (e) {
+    printUsage();
+    return;
+}
 
-const options = cli(optionList);
 if (options.help) {
-    const usageOut = usage([
-      {
-        header: 'Options',
-        optionList
-      },
-    ])
-    console.log(usageOut)
+    printUsage();
     return;
 }
 
