@@ -17,7 +17,7 @@ const optionList = [
     { name: 'help', alias: 'h', type: Boolean},
     { name: 'file', alias: 'f', type: String, defaultValue: path.join(process.env['HOME'], 'git', 'notes', 'notes.txt')},
     { name: 'newDate', alias: 'n', type: Boolean },
-    { name: 'out', alias: 'o', type: Boolean },
+    { name: 'list', alias: 'l', type: Boolean },
 ]
 
 const options = cli(optionList);
@@ -32,7 +32,7 @@ if (options.help) {
     return;
 }
 
-if (options.out) {
+if (options.list) {
     return new Promise(resolve => {
         stream.pipeline(fs.createReadStream(options.file), process.stdout, () => resolve());
     })
