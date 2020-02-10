@@ -3,6 +3,7 @@ const usage = require('command-line-usage')
 const child_process = require('child_process')
 const path = require('path')
 const fs = require('fs');
+const stream = require('stream');
 
 function appendNewDate(file) {
     const date = new Date();
@@ -16,6 +17,7 @@ const optionList = [
     { name: 'help', alias: 'h', type: Boolean},
     { name: 'file', alias: 'f', type: String, defaultValue: path.join(process.env['HOME'], 'git', 'notes', 'notes.txt')},
     { name: 'newDate', alias: 'n', type: Boolean },
+    { name: 'out', alias: 'o', type: Boolean },
 ]
 
 const options = cli(optionList);
@@ -28,6 +30,12 @@ if (options.help) {
     ])
     console.log(usageOut)
     return;
+}
+
+if (options.out) {
+    return new Promise(resolve => {
+        stream.pipeline(fs.createReadStream(options.file), process.stdout, () => resolve());
+    })
 }
 
 if (options.newDate) {
