@@ -7,7 +7,7 @@ const stream = require('stream');
 
 const optionList = [
     { name: 'help', alias: 'h', type: Boolean, description: 'prints usage'},
-    { name: 'file', alias: 'f', type: String, defaultValue: path.join(process.env['HOME'], 'git', 'notes', 'notes.txt'), description: 'the desired notes file'},
+    { name: 'file', alias: 'f', type: String, defaultValue: process.env['NOTE'], description: 'the desired notes file'},
     { name: 'newDate', alias: 'n', type: Boolean, description: 'appends the current date to the end of the file' },
     { name: 'list', alias: 'l', type: Boolean, description: 'prints the contents of the note' },
 ]
@@ -27,7 +27,7 @@ function appendNewDate(file) {
     const month = date.getUTCMonth() + 1;
     const day = date.getUTCDate();
     const year = date.getUTCFullYear();
-    fs.appendFileSync(file, `${month}/${day}/${year}\n\n`);
+    fs.appendFileSync(file, `\n# ${month}/${day}/${year}\n\n`);
 }
 
 let options;
@@ -40,6 +40,12 @@ try {
 
 if (options.help) {
     printUsage();
+    return;
+}
+
+if (options.file == null) {
+    console.error('No valid file provided');
+    console.error('Please provide $NOTE or -f');
     return;
 }
 
