@@ -8,7 +8,7 @@ const stream = require('stream');
 const optionList = [
     { name: 'help', alias: 'h', type: Boolean, description: 'prints usage'},
     { name: 'file', alias: 'f', type: String, defaultValue: process.env['NOTE'], description: 'the desired notes file'},
-    { name: 'newDate', alias: 'n', type: Boolean, description: 'appends the current date to the end of the file' },
+    { name: 'newDate', alias: 'n', type: String, description: 'appends the specified day to the end of the file (ex. today, tomorrow)' },
     { name: 'list', alias: 'l', type: Boolean, description: 'prints the contents of the note' },
 ]
 
@@ -22,8 +22,14 @@ function printUsage() {
     console.log(usageOut);
 }
 
-function appendNewDate(file) {
-    const date = new Date();
+function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+function appendNewDate(specifiedDay, file) {
+    const date = addDays(new Date(), specifiedDay === 'tomorrow' ? 1 : 0);
     const month = date.getUTCMonth() + 1;
     const day = date.getUTCDate();
     const year = date.getUTCFullYear();
@@ -55,8 +61,8 @@ if (options.list) {
     })
 }
 
-if (options.newDate) {
-    appendNewDate(options.file);
+if (options.newDate !== undefined) {
+    appendNewDate(options.newDate || 'tomorrow', options.file);
 }
 
 const editor = process.env.EDITOR || 'vim';
