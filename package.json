@@ -10,6 +10,12 @@
   "license": "ISC",
   "dependencies": {
     "command-line-args": "^5.1.1",
-    "command-line-usage": "^6.1.0"
+    "command-line-usage": "^6.1.0",
+    "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "@types/command-line-args": "^5.0.0",
+    "@types/command-line-usage": "^5.0.1",
+    "@types/node": "^13.7.1"
   }
 }
